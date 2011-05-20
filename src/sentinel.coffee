@@ -1,6 +1,7 @@
 jQuery.fn.check = () ->
   new Sentinel(this)
 
+
 window.Sentinel = class Sentinel
   constructor: (element) ->
     @object = {
@@ -15,18 +16,18 @@ window.Sentinel = class Sentinel
     _this = this
     ($ document).delegate _this.object.element.selector, 'focusout', ->
       valid = true
-      valid = valid && (_this.validate ($ _this.object.element), validation) for validation in _this.object.validations
+      valid = valid && (_this.validate validation) for validation in _this.object.validations
       (if typeof _this.callbacks[_this.object.pass] == 'function' then _this.callbacks[_this.object.pass]() else _this.callbacks['ok']()) if valid
       (if typeof _this.callbacks[_this.object.fail] == 'function' then _this.callbacks[_this.object.fail]() else _this.callbacks['ko']()) unless valid
         
-  validate: (element, validation) ->
-    @validations[validation](element)
+  validate: (validation) ->
+    @validations[validation](@object.element)
     
   validations: {
       email: (element) ->
-        return true
-      presence: (element) ->
         return false
+      presence: (element) ->
+        return (jQuery.trim element.val()) != ''
       # more validators to be added
     }
     

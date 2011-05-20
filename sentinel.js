@@ -1,7 +1,3 @@
-/* DO NOT MODIFY. This file was compiled Fri, 20 May 2011 10:32:18 GMT from
- * /Users/marchino/Sites/mmplus/app/coffeescripts/registration/personal_data_validation.coffee
- */
-
 (function() {
   var Sentinel;
   jQuery.fn.check = function() {
@@ -28,7 +24,7 @@
         _ref = _this.object.validations;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           validation = _ref[_i];
-          valid = valid && (_this.validate($(_this.object.element), validation));
+          valid = valid && (_this.validate(validation));
         }
         if (valid) {
           if (typeof _this.callbacks[_this.object.pass] === 'function') {
@@ -46,15 +42,15 @@
         }
       });
     };
-    Sentinel.prototype.validate = function(element, validation) {
-      return this.validations[validation](element);
+    Sentinel.prototype.validate = function(validation) {
+      return this.validations[validation](this.object.element);
     };
     Sentinel.prototype.validations = {
       email: function(element) {
-        return true;
+        return false;
       },
       presence: function(element) {
-        return false;
+        return (jQuery.trim(element.val())) !== '';
       }
     };
     Sentinel.prototype.callbacks = {
