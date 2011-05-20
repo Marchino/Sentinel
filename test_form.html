@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head><title>Sentinel Test</title></head>
+  <body>
+    <form>
+      <p><label>Email<input type="text" id="email" name="email"/></label></p>
+      <p><label>Email confirmation<input type="text" id="email_confirmation" name="email_confirmation"/></label></p>
+      <p><input type="submit" /></p>
+    </form>
+  </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script src="sentinel.js"></script>
+  <script>
+    $(function(){
+      window.Sentinel.prototype.callbacks['turn_red'] = function() {
+        return console.log('red');
+      };
+      window.Sentinel.prototype.callbacks['turn_green'] = function() {
+        return console.log('green');
+      };
+    
+      $('#email').check()
+        .with(['presence', 'email'])
+        .pass('turn_green')
+        .fail('turn_red')
+        .init();
+    });
+  </script>
+</html>
