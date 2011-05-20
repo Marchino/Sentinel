@@ -27,4 +27,15 @@ describe("Sentinel", function() {
     expect(sentinel.validate('presence')).toBeFalsy();
   });
   
+  it("should fail on the email validator without a valid email", function(){
+    field.val('not a valid email address');
+    expect(sentinel.validate('email')).toBeFalsy();
+  });
+  
+  it("should pass on the email validator with a valid email", function(){
+    field.val('valid.email@domain.com');
+    expect(sentinel.validate('email')).toBeTruthy();
+  });
+  
+  
 });

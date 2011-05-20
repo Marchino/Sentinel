@@ -25,7 +25,8 @@ window.Sentinel = class Sentinel
     
   validations: {
       email: (element) ->
-        return false
+        regexp = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+        return !!(regexp.test (jQuery.trim element.val()));
       presence: (element) ->
         return (jQuery.trim element.val()) != ''
       # more validators to be added
