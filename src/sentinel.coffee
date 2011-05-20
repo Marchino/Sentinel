@@ -1,4 +1,4 @@
-jQuery.fn.sentinel = () ->
+jQuery.fn.check = () ->
   new Sentinel(this)
 
 window.Sentinel = class Sentinel
