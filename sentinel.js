@@ -1,13 +1,22 @@
+/* DO NOT MODIFY. This file was compiled Wed, 25 May 2011 13:24:13 GMT from
+ * /Users/marchino/Sites/mmplus/app/coffeescripts/registration/sentinel.coffee
+ */
+
 (function() {
   var Sentinel;
   jQuery.fn.check = function() {
-    return new Sentinel(this);
+    var s;
+    s = new Sentinel(this);
+    window.sentinels[window.sentinels.length] = s;
+    return s;
   };
+  window.sentinels = [];
   window.Sentinel = Sentinel = (function() {
     function Sentinel(element) {
       this.object = {
         'element': element,
-        'validations': ['presence'],
+        'validations': [],
+        'error_message': 'Error',
         'pass': 'ok',
         'fail': 'ko'
       };
@@ -18,32 +27,67 @@
     Sentinel.prototype.bind_event = function(element) {
       var _this;
       _this = this;
-      return ($(document)).delegate(_this.object.element.selector, 'focusout', function() {
-        var valid, validation, _i, _len, _ref;
-        valid = true;
+      return ($(element.element)).each(function() {
+        ($(document)).delegate("#" + (($(this)).attr('id')), 'focusin', function() {
+          return _this.reset_validations($(this));
+        });
+        return ($(document)).delegate("#" + (($(this)).attr('id')), 'focusout', function() {
+          return _this.validate_all($(this));
+        });
+      });
+    };
+    Sentinel.prototype.reset_validations = function(element) {
+      return ($(element)).data('valid', true);
+    };
+    Sentinel.prototype.validate_all = function(element) {
+      var result, _this;
+      _this = this;
+      result = true;
+      element.each(function() {
+        var el, messages, v, valid, validation, validation_result, _i, _j, _len, _len2, _ref, _ref2;
+        el = $(this);
+        validation_result = true;
+        valid = [];
+        messages = [];
         _ref = _this.object.validations;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           validation = _ref[_i];
-          valid = valid && (_this.validate(validation));
+          _ref2 = _this.validate(validation, el), valid[valid.length] = _ref2[0], messages[messages.length] = _ref2[1];
         }
-        if (valid) {
+        for (_j = 0, _len2 = valid.length; _j < _len2; _j++) {
+          v = valid[_j];
+          validation_result = validation_result && v;
+        }
+        el.data('valid', el.data('valid') && validation_result);
+        if (el.data('valid')) {
           if (typeof _this.callbacks[_this.object.pass] === 'function') {
-            _this.callbacks[_this.object.pass]();
+            _this.callbacks[_this.object.pass](el);
           } else {
-            _this.callbacks['ok']();
+            _this.callbacks['ok'](_this.object.el);
           }
         }
-        if (!valid) {
+        if (!el.data('valid')) {
           if (typeof _this.callbacks[_this.object.fail] === 'function') {
-            return _this.callbacks[_this.object.fail]();
+            _this.callbacks[_this.object.fail](el, messages.pop());
           } else {
-            return _this.callbacks['ko']();
+            _this.callbacks['ko'](el);
           }
         }
+        result = result && el.data('valid');
       });
+      console.log(result);
+      return result;
     };
-    Sentinel.prototype.validate = function(validation) {
-      return this.validations[validation](this.object.element);
+    Sentinel.prototype.validate = function(validation, element) {
+      if (element == null) {
+        element = this.object.element;
+      }
+      if (typeof validation === 'string') {
+        return [this.validations[validation](element), this.object.error_message];
+      }
+      if (typeof validation === 'object') {
+        return [this.validations[validation.validation](element), validation.message];
+      }
     };
     Sentinel.prototype.validations = {
       email: function(element) {
@@ -53,12 +97,33 @@
       },
       presence: function(element) {
         return (jQuery.trim(element.val())) !== '';
+      },
+      confirmation: function(element) {
+        var compare_to;
+        compare_to = element.attr('id').replace(/_\w[^_]+$/, '');
+        return element.val() === ($("#" + compare_to)).val();
       }
     };
     Sentinel.prototype.callbacks = {
-      ok: function() {},
-      ko: function() {
-        return alert('error');
+      ok: function(element, message) {
+        if (element.parent().hasClass('field_with_errors')) {
+          element.parent().removeClass('field_with_errors');
+        }
+        if (!element.parent().hasClass('ok')) {
+          element.parent().addClass('ok');
+        }
+        return element.parent().find('div.error').remove();
+      },
+      ko: function(element, message) {
+        if (element.parent().hasClass('ok')) {
+          element.parent().removeClass('ok');
+        }
+        if (!element.parent().hasClass('field_with_errors')) {
+          element.parent().addClass('field_with_errors');
+        }
+        if (element.parent().find('div.error').length === 0) {
+          return element.parent().append('<div class="error">' + message + '</div>');
+        }
       }
     };
     Sentinel.prototype.add_custom_validator = function(name, func) {
@@ -68,8 +133,11 @@
       return this.callbacks[name] = func;
     };
     Sentinel.prototype["with"] = function(validations) {
-      if (typeof validations === 'object' && validations.length > 0) {
+      if (validations instanceof Array) {
         this.object.validations = validations;
+      }
+      if (!(validations instanceof Array)) {
+        this.object.validations[this.object.validations.length] = validations;
       }
       return this;
     };
