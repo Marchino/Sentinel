@@ -19,7 +19,11 @@ window.Sentinel = class Sentinel
     _this = this    
     ($ element.element).each ->
       ($ document).delegate "##{($ this).attr('id')}", 'focusin', ->
-        _this.reset_validations ($ this)
+        _this.reset_validations ($ this) 
+      if ($ this).is(':[type=checkbox]')    
+        ($ document).delegate "##{($ this).attr('id')}", 'click', ->
+          ($ this).trigger('focusin').trigger('focusout')
+        
       ($ document).delegate "##{($ this).attr('id')}", 'focusout', ->
         _this.validate_all ($ this)
 
@@ -57,6 +61,9 @@ window.Sentinel = class Sentinel
       confirmation: (element) ->
         compare_to = element.attr('id').replace(/_\w[^_]+$/, '')
         return element.val() == ($ "##{compare_to}").val()
+      acceptance: (element) ->
+        console.log element.val()
+        return !!(element.attr('checked'))
       # more validators to be added
     }
     

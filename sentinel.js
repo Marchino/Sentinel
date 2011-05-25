@@ -1,7 +1,3 @@
-/* DO NOT MODIFY. This file was compiled Wed, 25 May 2011 13:24:13 GMT from
- * /Users/marchino/Sites/mmplus/app/coffeescripts/registration/sentinel.coffee
- */
-
 (function() {
   var Sentinel;
   jQuery.fn.check = function() {
@@ -31,6 +27,11 @@
         ($(document)).delegate("#" + (($(this)).attr('id')), 'focusin', function() {
           return _this.reset_validations($(this));
         });
+        if (($(this)).is(':[type=checkbox]')) {
+          ($(document)).delegate("#" + (($(this)).attr('id')), 'click', function() {
+            return ($(this)).trigger('focusin').trigger('focusout');
+          });
+        }
         return ($(document)).delegate("#" + (($(this)).attr('id')), 'focusout', function() {
           return _this.validate_all($(this));
         });
@@ -102,6 +103,10 @@
         var compare_to;
         compare_to = element.attr('id').replace(/_\w[^_]+$/, '');
         return element.val() === ($("#" + compare_to)).val();
+      },
+      acceptance: function(element) {
+        console.log(element.val());
+        return !!(element.attr('checked'));
       }
     };
     Sentinel.prototype.callbacks = {
