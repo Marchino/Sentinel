@@ -4,4 +4,4 @@ Smart javascript form validator.
 Sentinel allows you to define any number of validations on your form fields.
 You can either use the bundled validators and callbacks or add your own.
 
-{Click here}[https://gist.github.com/991008] for an example of how to use it.
+go to https://gist.github.com/991008 for an example of how to use it.
