@@ -1,52 +1,73 @@
 describe("Sentinel", function() {
-  var field;
-  var sentinel;
-  
-  beforeEach(function() {
-    field = $('<input>')
-      .attr('id', 'field')
-    sentinel = new Sentinel(field);
-    sentinel.with(['presence', 'email']);
-  });
+ 
+  var form = $('<form><input class="required" id="field" /><input class="required" id="field_confirmation" /></form>');
+  var sentinel = form.sentinel().check('#field').for('presence, email');
+  var field = form.find('#field');
+  var field_confirmation = form.find('#field_confirmation')
   
 
-  it("should perform 2 tests on the field", function() {
-    expect(sentinel.object.validations.length).toEqual(2);
+  it("should perform 2 tests on one field", function() {
+    expect(sentinel.fields.length).toEqual(1)
+    expect(sentinel.fields[0].validations.length).toEqual(2);
   });
   
-  it("should have 3 test after another call to with", function(){
-    sentinel.with({'validation' : 'confirmation', 'error_message' : 'custom error message for this validator'});
-    expect(sentinel.object.validations.length).toEqual(3);
+  it("should have 3 test after another call to for", function(){
+    sentinel.for('confirmation')
+    expect(sentinel.fields[0].validations.length).toEqual(3);
   });
   
   it("should fail on the presence validator without a value for the field", function(){
-    validation = sentinel.validate('presence')
-    expect(validation[0]).toBeFalsy();
+    validation = sentinel.validations.presence(field, sentinel.form)
+    expect(validation).toBeFalsy();
   });
   
   it("should pass on the presence validator if a value is set", function(){
     field.val('some value');
-    validation = sentinel.validate('presence')
-    expect(validation[0]).toBeTruthy();
+    validation = sentinel.validations.presence(field, sentinel.form)
+    expect(validation).toBeTruthy();
   });
   
   it("should fail on the presence validator with a series of spaces as value", function(){
-    field.val('     ');
-    validation = sentinel.validate('presence')
-    expect(validation[0]).toBeFalsy();
+    field.val('        ');
+    validation = sentinel.validations.presence(field, sentinel.form)
+    expect(validation).toBeFalsy();
   });
   
   it("should fail on the email validator without a valid email", function(){
     field.val('not a valid email address');
-    validation = sentinel.validate('email')
-    expect(validation[0]).toBeFalsy();
+    validation = sentinel.validations.email(field, sentinel.form)
+    expect(validation).toBeFalsy();
   });
   
   it("should pass on the email validator with a valid email", function(){
     field.val('valid.email@domain.com');
-    validation = sentinel.validate('email')
-    expect(validation[0]).toBeTruthy();
+    validation = sentinel.validations.email(field, sentinel.form)
+    expect(validation).toBeTruthy();
   });
   
+  it("should not pass on the confirmation validator without a value for the confirmation field", function(){
+    sentinel.check('#field_confirmation').for('confirmation');
+    field.val('valid.email@domain.com');
+    validation = sentinel.validations.confirmation(field_confirmation, sentinel.form);
+    expect(validation).toBeFalsy();
+  });
+  
+  it("should not pass on the confirmation validator with a wrong value for the confirmation field", function(){
+    sentinel.check('#field_confirmation').for('confirmation');
+    field.val('valid.email@domain.com');    
+    field_confirmation.val('wrong value');
+    validation = sentinel.validations.confirmation(field_confirmation, sentinel.form);
+    expect(validation).toBeFalsy();
+  });
+  
+  it("should pass on the confirmation validator with the right value for the confirmation field", function(){
+    sentinel.check('#field_confirmation').for('confirmation');
+    field.val('valid.email@domain.com');
+    field_confirmation.val('valid.email@domain.com');
+    validation = sentinel.validations.confirmation(field_confirmation, sentinel.form);
+    expect(validation).toBeTruthy();
+  });
+ 
+ 
   
 });
