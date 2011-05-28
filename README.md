@@ -20,4 +20,8 @@ Sentinel would validate that form like this:
           .error_message('Email confirmation should be equal to email')
       .start()
 
+Feedback
+--------
+I'm very interested in any kind of feedback and ideas: please, submit them to marco.crepaldi@gmail.com or on my twitter (@_marchino_).
+Thank you
 
