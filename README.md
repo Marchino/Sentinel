@@ -20,7 +20,7 @@ Sentinel would validate that form like this:
           .error_message('Email confirmation should be equal to email')
       .start()
       
-If you need custom validations or custom callbacks, you can easily extend Sentinel and add as many custom validations and callbacks as you need.
+If you need custom validations or custom callbacks, you can easily extend Sentinel and add as many as you need (Of course this should be done before setting up Sentinel to work with your form).
 
     Sentinel.prototype.validations.custom_validation = function(){
       // your fancy code goes here
