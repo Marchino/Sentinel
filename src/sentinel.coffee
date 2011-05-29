@@ -122,7 +122,6 @@ window.Sentinel = class Sentinel
     for field in @fields
       @reset_validations field.selector
       ($ field.selector).each ->
-        console.log(field.selector)
         current_validation = _this.validate ($ this, _this.form)
         valid = valid && current_validation
         return
@@ -131,7 +130,6 @@ window.Sentinel = class Sentinel
   validate: (element) ->
     valid = element.data('valid')
     validations = @collect_validations element
-    console.log validations
     for validation in validations
       valid = valid && @validations[validation.validation](element, @form) 
       unless valid

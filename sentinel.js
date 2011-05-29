@@ -1,7 +1,3 @@
-/* DO NOT MODIFY. This file was compiled Sun, 29 May 2011 09:22:40 GMT from
- * /Users/marchino/Sites/mmplus/app/coffeescripts/registration/sentinel.coffee
- */
-
 (function() {
   var Sentinel;
   jQuery.fn.sentinel = function() {
@@ -194,7 +190,6 @@
         this.reset_validations(field.selector);
         ($(field.selector)).each(function() {
           var current_validation;
-          console.log(field.selector);
           current_validation = _this.validate($(this, _this.form));
           valid = valid && current_validation;
         });
@@ -205,7 +200,6 @@
       var valid, validation, validations, _i, _len;
       valid = element.data('valid');
       validations = this.collect_validations(element);
-      console.log(validations);
       for (_i = 0, _len = validations.length; _i < _len; _i++) {
         validation = validations[_i];
         valid = valid && this.validations[validation.validation](element, this.form);
