@@ -1,5 +1,9 @@
 describe("Sentinel", function() {
- 
+
+  Sentinel.prototype.callbacks.custom_callback = function(){
+    console.log('this is a custom callback');
+  }
+  
   var form = $('<form><input class="required" id="field" /><input class="required" id="field_confirmation" /></form>');
   var sentinel = form.sentinel().check('#field').for('presence, email');
   var field = form.find('#field');
@@ -66,6 +70,26 @@ describe("Sentinel", function() {
     field_confirmation.val('valid.email@domain.com');
     validation = sentinel.validations.confirmation(field_confirmation, sentinel.form);
     expect(validation).toBeTruthy();
+  });
+  
+  it("should not assign a custom callback if it doesn't exist", function(){
+    sentinel.success('invalid_callback');
+    var field = sentinel.fields[sentinel.fields.length-1];
+    result = true
+    for(var i=0;i<field.validations.length;i++){
+      result = result && field.validations[i].success == 'invalid_callback'
+    }
+    expect(result).toBeFalsy();
+  });
+  
+  it("should assign a custom callback if it does exist", function(){
+    sentinel.success('custom_callback');
+    var field = sentinel.fields[sentinel.fields.length-1];
+    result = true
+    for(var i=0;i<field.validations.length;i++){
+      result = result && field.validations[i].success == 'custom_callback'
+    }
+    expect(result).toBeTruthy();
   });
  
  

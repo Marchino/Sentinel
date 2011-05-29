@@ -19,9 +19,37 @@ Sentinel would validate that form like this:
         .for('confirmation')
           .error_message('Email confirmation should be equal to email')
       .start()
+      
+If you need custom validations or custom callbacks, you can easily extend Sentinel and add as many custom validations and callbacks as you need.
+
+    Sentinel.prototype.validations.custom_validation = function(){
+      // your fancy code goes here
+    }
+    
+    Sentinel.prototype.callbacks.custom_callback = function(){
+      // callback behaviour goes here
+    }
+    
+Custom validators work just as bundled ones, just call them via the check() method.
+For custom callbacks you need to specify for what validations they should be run. Something like this: 
+
+    $('form').sentinel()
+      .check('#email')
+        .for('email')
+        .error_message('Wrong email format')
+        .success('custom_callback')
+
+Or
+
+    $('form').sentinel()
+      .check('#email')
+        .for('email')
+        .error_message('Wrong email format')
+        .fail('custom_callback')
+        
 
 Feedback
 --------
-I'm very interested in any kind of feedback and ideas: please, submit them to marco.crepaldi@gmail.com or on my twitter (@_marchino_).
+I'm very interested in any kind of feedback and ideas: please, submit them to [marco.crepaldi@gmail.com](mailto:marco.crepaldi@gmail.com) or on [my twitter](http://twitter.com/_marchino_).
 Thank you
 

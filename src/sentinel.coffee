@@ -1,3 +1,8 @@
+# $('form').sentinel()
+#   .check('.required')
+#   .for('presence')
+#   .error_message('mandatory field')
+
 jQuery.fn.sentinel = () ->
   ($ this).data 'sentinel', new Sentinel(this) unless ($ this).data 'sentinel'
   return ($ this).data 'sentinel'
@@ -59,7 +64,21 @@ window.Sentinel = class Sentinel
       validation.error_message = error_message unless validation.error_message 
     @fields.push field
     return this  
+  
+  success: (name) ->
+    field = @fields.pop()
+    for validation in field.validations
+      validation.success = name if typeof @validations[name] == 'function' and not validation.success
+    @fields.push field
+    return this
     
+  fail: (name) ->
+    field = @fields.pop()
+    for validation in field.validations
+      validation.fail = name if typeof @validations[name] == 'function' and not validation.success
+    @fields.push field
+    return this
+
   start: () ->
     for field in @fields
       @set_defaults field

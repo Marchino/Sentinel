@@ -29,6 +29,11 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   <script src="sentinel.js"></script>
   <script>
+  
+    Sentinel.prototype.callbacks.privacy_not_accepted = function(){
+      alert('privacy statement should be accepted.');
+    }
+  
     $(function(){
       $('form').sentinel()
         .check('#email')
@@ -44,6 +49,7 @@
           .check('#privacy')
             .for('acceptance')
               .error_message('You must accept the privacy agreement')
+              .fail('privacy_not_accepted')
         .start()
     });
   </script>
