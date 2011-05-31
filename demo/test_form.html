@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Sentinel Test</title>
+    <link rel="stylesheet" href="test_form.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  </head>
+  <body>
+    <div id="container">
+      <form>
+        <ul>
+          <li>
+            <label>Email</label>
+            <input type="text" id="email" name="email"/>
+          </li>
+          <li>
+            <label>Email confirmation</label>
+            <input type="text" id="email_confirmation" name="email_confirmation"/>
+          </li>
+          <li>
+            <label>Privacy agreement</label>
+            <input type="checkbox" id="privacy" name="privacy"/>
+          </li>
+        </ul>
+        <p><input id="submit" type="submit"></p>
+      </form>
+    </div>
+  </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script src="../jquery.sentinel.js"></script>
+  <script>
+  
+    Sentinel.prototype.callbacks.privacy_not_accepted = function(){
+      alert('privacy statement should be accepted.');
+    }
+  
+    $(function(){
+      $('form').sentinel()
+        .check('#email')
+          .for('email')
+            .error_message('Wrong email format')
+          .for('presence')
+            .error_message('Mandatory field')      
+          .check('#email_confirmation')
+            .for('confirmation')
+              .error_message('Email confirmation should be equal to email')
+            .for('presence')
+              .error_message('Mandatory field')
+          .check('#privacy')
+            .for('acceptance')
+              .error_message('You must accept the privacy agreement')
+              .fail('privacy_not_accepted')
+        .start()
+    });
+    
+  </script>
+</html>
